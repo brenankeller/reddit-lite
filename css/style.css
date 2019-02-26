@@ -3,7 +3,7 @@ body {
 }
 
 .post {
-    padding: 2px 0;
+    margin: 2px 0;
 }
 
 .comment {
@@ -16,4 +16,8 @@ body {
 .comment-author {
     font-weight: bold;
     color: grey;
+}
+
+.nav-buttons {
+    margin: 10px;
 }
