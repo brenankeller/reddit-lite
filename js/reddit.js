@@ -8,6 +8,12 @@ const loader = `
 </div>
 `
 
+/**
+ * Retrieves newest posts from Reddit and passes to renderPosts.
+ * @param  {String} direction   Determines pagination direction; either 'after' or 'before'. Optional.
+ * @param  {Number} position    The fullname of the Reddit post on which to anchor pagination. Optional.
+ * @param  {Number} count       The number of items already seen in this subreddit. Optional.
+ */
 function fetchPosts(direction, position, count=0) {
     var postList = document.getElementById('postList')
     postList.innerHTML = loader;
@@ -36,33 +42,40 @@ function fetchPosts(direction, position, count=0) {
     })
 }
 
-function renderPosts(threads, before, after, count) {
+/**
+ * Renders posts retrieved from Reddit in list format to the postLists div. Called from index.html.
+ * @param  {Array}  posts     Array of Reddit posts objects.
+ * @param  {String} before    Fullname of the Reddit post preceeding the results.
+ * @param  {String} after     Fullname of the Reddit post proceeding the results.
+ * @param  {Number} count     The number of items already seen in this subreddit.
+ */
+function renderPosts(posts, before, after, count) {
     var postList = document.getElementById('postList')
 
-    const markup = threads.map(thread => `
-        <a href="/comments.html?id=${thread['data']['id']}">
+    const markup = posts.map(post => `
+        <a href="/comments.html?id=${post['data']['id']}">
             <div class="row post">
-                <div class="col-sm-3"><img class="img-fluid" src=${thread['data']['thumbnail_width'] ? `${thread['data']['thumbnail']}` : 'img/reddit-default.jpg'}></div>
+                <div class="col-sm-3"><img class="img-fluid" src=${post['data']['thumbnail_width'] ? `${post['data']['thumbnail']}` : 'img/reddit-default.jpg'}></div>
                 <div class="col-sm-9">
                     <div class="row">
                         <div class="col-sm-12">
-                            ${DOMPurify.sanitize(thread['data']['title'])}
+                            ${DOMPurify.sanitize(post['data']['title'])}
                         </div>
                     </div>
                     <div class="row subtle-link">
                         <div class="col-sm-4">
-                            ${$.timeago(new Date(thread['data']['created_utc']*1000))}
+                            ${$.timeago(new Date(post['data']['created_utc']*1000))}
                         </div>
                         <div class="col-sm-4">
-                            ${thread['data']['num_comments']} comments    
+                            ${post['data']['num_comments']} comments    
                         </div>
                         <div class="col-sm-4">
-                            ${thread['data']['author']}
+                            ${post['data']['author']}
                         </div>
                     </div>
                     <div class="row preview-text">
                         <div class="col-sm-12">
-                            ${DOMPurify.sanitize(thread['data']['selftext'])}
+                            ${DOMPurify.sanitize(post['data']['selftext'])}
                         </div>
                     </div>
                 </div>
@@ -77,11 +90,14 @@ function renderPosts(threads, before, after, count) {
     postList.innerHTML = markup.join('')
 }
 
+/**
+ * Retrieves a listing of comments for a Reddit post and passes to renderComments. Note that some comments are ommited from the base tree.
+ */
 function fetchComments() {
     var commentPage = document.getElementById('commentPage')
     commentPage.innerHTML = loader;
     var params = getSearchParameters();
-    
+
     $.ajax({
         url: `https://www.reddit.com/r/raspberry_pi/comments/${params.id}.json`,
         type: 'GET',
@@ -94,6 +110,10 @@ function fetchComments() {
     })
 }
 
+/**
+ * Recursive function which traverses the comment base tree and generates HTML.
+ * @param  {Array}  comments     Array of Reddit comment objects.
+ */
 function mapComments(comments) {
     const markup = comments.map(comment => `
         <div class="row comment">
@@ -113,6 +133,11 @@ function mapComments(comments) {
     return markup.join('')
 }
 
+/**
+ * Renders post and comments retrieved from Reddit to the commentPage div. Called from comments.html.
+ * @param  {Object} post     Reddit posts object.
+ * @param  {String} comments  HTML of the comment base tree.
+ */
 function renderComments(post, comments) {
     var commentPage = document.getElementById('commentPage')
     var imageHtml

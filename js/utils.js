@@ -1,4 +1,6 @@
-// The contents of this file were sourced from the Internet.
+/**
+ * The contents of this file were borrowed from the internet.
+ */
 
 function getSearchParameters() {
     var prmstr = window.location.search.substr(1);
