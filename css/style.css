@@ -1,14 +1,15 @@
 body {
     word-wrap: break-word;
+    padding-bottom: 50px;
 }
 
 .post {
-    margin: 2px 0;
+    margin: 24px 0;
 }
 
 .comment {
     margin-left: 0px;
-    margin: 20px 0;
+    margin: 16px 0;
     font-size: 10pt;
     border-left: 2px solid grey;
 }
@@ -20,4 +21,23 @@ body {
 
 .nav-buttons {
     margin: 10px;
+}
+
+.subtle-link {
+    font-size: 10pt;
+    color: grey;
+}
+
+.preview-text {
+    font-size: 9pt;
+    color: grey;
+    padding: 8px 0 16px;
+}
+
+.title {
+    margin: 32px 0;
+}
+
+.self-text {
+    margin: 16px 0;
 }

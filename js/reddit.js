@@ -34,7 +34,29 @@ function renderPosts(threads, before, after, count) {
         <a href="/comments.html?id=${thread['data']['id']}">
             <div class="row post">
                 <div class="col-sm-3"><img class="img-fluid" src=${thread['data']['thumbnail_width'] ? `${thread['data']['thumbnail']}` : 'img/reddit-default.jpg'}></div>
-                <div class="col-sm-9">${thread['data']['title']}</div>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            ${thread['data']['title']}
+                        </div>
+                    </div>
+                    <div class="row subtle-link">
+                        <div class="col-sm-4">
+                            ${$.timeago(new Date(thread['data']['created_utc']*1000))}
+                        </div>
+                        <div class="col-sm-4">
+                            ${thread['data']['num_comments']} comments    
+                        </div>
+                        <div class="col-sm-4">
+                            ${thread['data']['author']}
+                        </div>
+                    </div>
+                    <div class="row preview-text">
+                        <div class="col-sm-12">
+                            ${thread['data']['selftext']}
+                        </div>
+                    </div>
+                </div>
             </div>
         </a>`)
 
@@ -52,7 +74,7 @@ function fetchComments() {
         url: `https://www.reddit.com/r/raspberry_pi/comments/${params.id}.json`,
         type: 'GET',
         success: function(result){
-            renderComments(result[1]['data']['children'])
+            renderComments(result[0]['data']['children'][0], result[1]['data']['children'])
         },
         error: function(error){
             console.error(`Error ${error}`)
@@ -66,7 +88,7 @@ function mapComments(comments) {
             <div class="col-sm-12">
                 <div class="row comment-author">
                     <div class="col-sm-6">${comment['data']['author']}</div>
-                    <div class="col-sm-6">${comment['data']['created_utc']}</div>
+                    <div class="col-sm-6">${$.timeago(new Date(comment['data']['created_utc']*1000))}</div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -79,9 +101,46 @@ function mapComments(comments) {
     return markup.join('')
 }
 
-function renderComments(comments) {
-    var commentThread = document.getElementById('commentThread')
-    commentThread.innerHTML = '';
+function renderComments(post, comments) {
+    var commentPage = document.getElementById('commentPage')
+    commentPage.innerHTML = '';
+    
+    var imageHtml
+    if ('preview' in post['data']){
+        const images = post['data']['preview']['images']
+        var imageHtml = post['data']['preview']['images'].map(image => `
+            <img class="img-fluid" src="${image['source']['url']}">
+        `)
+        imageHtml.join('')
+    }
+
+    var converter = new showdown.Converter(),
+        text = post['data']['selftext']
+        postHtml = converter.makeHtml(text)
+
     var commentHtml = mapComments(comments)
-    commentThread.innerHTML = commentHtml ? commentHtml : 'There are no comments on this post.'
+
+    const markup = `
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="title">${post['data']['title']}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                ${imageHtml ? imageHtml : ''}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 self-text">
+                ${postHtml}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                ${commentHtml ? commentHtml : 'There are no comments on this post.'}
+            </div>
+        </div>
+    `
+    commentPage.innerHTML = markup
 }
