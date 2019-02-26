@@ -1,0 +1,19 @@
+body {
+    word-wrap: break-word;
+}
+
+.thread {
+    padding: 2px 0;
+}
+
+.comment {
+    margin-left: 0px;
+    margin: 20px 0;
+    font-size: 10pt;
+    border-left: 2px solid grey;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: grey;
+}
