@@ -37,7 +37,7 @@ function renderPosts(threads, before, after, count) {
                 <div class="col-sm-9">
                     <div class="row">
                         <div class="col-sm-12">
-                            ${thread['data']['title']}
+                            ${DOMPurify.sanitize(thread['data']['title'])}
                         </div>
                     </div>
                     <div class="row subtle-link">
@@ -53,7 +53,7 @@ function renderPosts(threads, before, after, count) {
                     </div>
                     <div class="row preview-text">
                         <div class="col-sm-12">
-                            ${thread['data']['selftext']}
+                            ${DOMPurify.sanitize(thread['data']['selftext'])}
                         </div>
                     </div>
                 </div>
@@ -92,7 +92,7 @@ function mapComments(comments) {
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        ${comment['data']['body']}
+                        ${DOMPurify.sanitize(comment['data']['body'])}
                         ${comment['data']['replies'] ? mapComments(comment['data']['replies']['data']['children']) : ''}
                     </div>
                 </div>
@@ -107,7 +107,6 @@ function renderComments(post, comments) {
     
     var imageHtml
     if ('preview' in post['data']){
-        const images = post['data']['preview']['images']
         var imageHtml = post['data']['preview']['images'].map(image => `
             <img class="img-fluid" src="${image['source']['url']}">
         `)
@@ -133,7 +132,7 @@ function renderComments(post, comments) {
         </div>
         <div class="row">
             <div class="col-sm-12 self-text">
-                ${postHtml}
+                ${DOMPurify.sanitize(postHtml)}
             </div>
         </div>
         <div class="row">
