@@ -1,11 +1,20 @@
+const loader = `
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+`
+
 function fetchPosts(direction, position, count=0) {
+    var postList = document.getElementById('postList')
+    postList.innerHTML = loader;
     var url = 'https://www.reddit.com/r/raspberry_pi/new.json?sort=new'
     if (direction && position) {
         url += `&${direction}=${position}&count=${count}`
     }
-
-    var postList = document.getElementById('postList')
-    postList.innerHTML = '';
 
     $.ajax({
         url: url,
@@ -69,7 +78,10 @@ function renderPosts(threads, before, after, count) {
 }
 
 function fetchComments() {
+    var commentPage = document.getElementById('commentPage')
+    commentPage.innerHTML = loader;
     var params = getSearchParameters();
+    
     $.ajax({
         url: `https://www.reddit.com/r/raspberry_pi/comments/${params.id}.json`,
         type: 'GET',
@@ -103,8 +115,6 @@ function mapComments(comments) {
 
 function renderComments(post, comments) {
     var commentPage = document.getElementById('commentPage')
-    commentPage.innerHTML = '';
-    
     var imageHtml
     if ('preview' in post['data']){
         var imageHtml = post['data']['preview']['images'].map(image => `
