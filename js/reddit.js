@@ -53,7 +53,7 @@ function renderPosts(posts, before, after, count) {
     var postList = document.getElementById('postList')
 
     const markup = posts.map(post => `
-        <a href="/comments.html?id=${post['data']['id']}">
+        <a href="comments.html?id=${post['data']['id']}">
             <div class="row post">
                 <div class="col-sm-3"><img class="img-fluid" src=${post['data']['thumbnail_width'] ? `${post['data']['thumbnail']}` : 'img/reddit-default.jpg'}></div>
                 <div class="col-sm-9">
