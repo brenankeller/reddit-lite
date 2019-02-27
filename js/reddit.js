@@ -43,6 +43,24 @@ function fetchPosts(direction, position, count=0) {
 }
 
 /**
+ * Finds the optimal thumbnail image for a post.
+ * @param  {Object} postData   Reddit post object.
+ */
+function findThumbnailImage(postData) {
+    var images = postData['preview']['images']
+    if ('resolutions' in images[0] && images[0]['resolutions'].length > 0){
+        var resolutions = images[0]['resolutions']
+        if(resolutions.length >= 3){
+            return resolutions[2]
+        } else {
+            return resolutions.pop()
+        }
+    } else {
+        return images[0]['source']
+    }
+}
+
+/**
  * Renders posts retrieved from Reddit in list format to the postLists div. Called from index.html.
  * @param  {Array}  posts     Array of Reddit posts objects.
  * @param  {String} before    Fullname of the Reddit post preceeding the results.
@@ -56,7 +74,7 @@ function renderPosts(posts, before, after, count) {
         <a href="comments.html?id=${post['data']['id']}">
             <div class="row post">
                 <div class="col-sm-3 col-md-2">
-                    <img class="img-fluid-large" src=${post['data']['thumbnail_width'] ? `${post['data']['thumbnail']}` : 'img/reddit-default.jpg'}>
+                    <img class="img-fluid-large" src=${'preview' in post['data'] ? findThumbnailImage(post['data'])['url'] : 'img/reddit-default.jpg'}>
                 </div>
                 <div class="col-sm-9 col-md-10">
                     <div class="row">
