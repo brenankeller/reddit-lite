@@ -55,21 +55,23 @@ function renderPosts(posts, before, after, count) {
     const markup = posts.map(post => `
         <a href="comments.html?id=${post['data']['id']}">
             <div class="row post">
-                <div class="col-sm-3"><img class="img-fluid" src=${post['data']['thumbnail_width'] ? `${post['data']['thumbnail']}` : 'img/reddit-default.jpg'}></div>
-                <div class="col-sm-9">
+                <div class="col-sm-3 col-md-2">
+                    <img class="img-fluid-large" src=${post['data']['thumbnail_width'] ? `${post['data']['thumbnail']}` : 'img/reddit-default.jpg'}>
+                </div>
+                <div class="col-sm-9 col-md-10">
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 list-title">
                             ${DOMPurify.sanitize(post['data']['title'])}
                         </div>
                     </div>
                     <div class="row subtle-link">
-                        <div class="col-sm-4">
+                        <div class="col-auto col-lg-2">
                             ${$.timeago(new Date(post['data']['created_utc']*1000))}
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-auto col-lg-2">
                             ${post['data']['num_comments']} comments    
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-auto col-lg-8">
                             ${post['data']['author']}
                         </div>
                     </div>
