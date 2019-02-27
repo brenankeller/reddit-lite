@@ -82,7 +82,7 @@ function renderPosts(posts, before, after, count) {
                             ${DOMPurify.sanitize(post['data']['title'])}
                         </div>
                     </div>
-                    <div class="row subtle-link">
+                    <div class="row post-details">
                         <div class="col-auto col-lg-2">
                             ${$.timeago(new Date(post['data']['created_utc']*1000))}
                         </div>
@@ -176,8 +176,9 @@ function renderComments(post, comments) {
 
     const markup = `
         <div class="row">
-            <div class="col-sm-12">
-                <h2 class="title">${post['data']['title']}</h2>
+            <div class="col-sm-12 title">
+                <h2>${post['data']['title']}</h2>
+                <span class="post-details">${$.timeago(new Date(post['data']['created_utc']*1000))} - ${post['data']['author']}</span>
             </div>
         </div>
         <div class="row">
